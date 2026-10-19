@@ -1,0 +1,62 @@
+﻿@{
+    string controller = ViewContext.RouteData.Values["controller"] as string ?? string.Empty;
+    string pageTitle = ViewBag.Title != null ? ViewBag.Title + " — Арома Дом" : "Арома Дом — подсистема учёта материалов";
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@pageTitle</title>
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header class="app-header">
+        <div class="container header-inner">
+            <a class="brand" href="@Url.Action("Index", "Home")" title="Арома Дом — подсистема учёта материалов">
+                <img class="brand-logo" src="@Url.Content("~/Content/images/logo.png")" alt="Арома Дом" />
+            </a>
+            <nav class="app-nav" aria-label="Основная навигация">
+                <a class="nav-link @(controller == "Home" ? "active" : "")"
+                   href="@Url.Action("Index", "Home")">Главная</a>
+                <a class="nav-link @(controller == "Materials" ? "active" : "")"
+                   href="@Url.Action("Index", "Materials")">Каталог</a>
+                <a class="nav-link @(controller == "Calculator" ? "active" : "")"
+                   href="@Url.Action("Index", "Calculator")">Калькулятор выхода</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page">
+        @if (TempData["Success"] != null)
+        {
+            <div class="notice notice-success" role="status">
+                <strong>Готово.</strong> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="notice notice-error" role="alert">
+                <strong>Ошибка.</strong> @TempData["Error"]
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="app-footer">
+        <div class="container footer-inner">
+            <span>© @DateTime.Now.Year «Арома Дом» — подсистема учёта материалов</span>
+            <span class="footer-note">Декоративные ароматические свечи · SQL Server</span>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="@Url.Content("~/Scripts/site.js")"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,24 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@{
+    ViewBag.Title = "Ошибка";
+}
+
+<div class="empty-state" role="alert">
+    <h2>Не удалось выполнить операцию</h2>
+    <p>
+        Приложение столкнулось с ошибкой. Данные не были изменены.
+        Вернитесь к списку материалов и повторите действие; если ошибка повторяется,
+        проверьте подключение к базе данных.
+    </p>
+
+    @if (Model != null && !string.IsNullOrEmpty(Model.ActionName))
+    {
+        <p class="muted">
+            Действие: @Model.ActionName, контроллер: @Model.ControllerName.
+        </p>
+    }
+
+    <div class="empty-actions">
+        <a class="btn btn-primary" href="@Url.Action("Index", "Materials")">К списку материалов</a>
+    </div>
+</div>

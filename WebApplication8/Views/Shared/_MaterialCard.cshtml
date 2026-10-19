@@ -1,0 +1,33 @@
+﻿@model WebApplication8.Models.MaterialCard
+
+<article class="material-card">
+    <a class="card-overlay" href="@Url.Action("Edit", "Materials", new { id = Model.MaterialId })"
+       aria-label="Редактировать материал «@Model.Name»"></a>
+
+    <span class="type-pill">@Model.MaterialTypeName</span>
+    <h3 class="card-title">@Model.Name</h3>
+
+    <dl class="card-metrics">
+        <div class="metric">
+            <dt>Минимальное количество</dt>
+            <dd>@Model.MinQuantity.ToString("0.###") @Model.UnitShortName</dd>
+        </div>
+        <div class="metric">
+            <dt>Количество на складе</dt>
+            <dd>@Model.StockQuantity.ToString("0.###") @Model.UnitShortName</dd>
+        </div>
+        <div class="metric">
+            <dt>Цена</dt>
+            <dd>@Model.Price.ToString("N2") р / @Model.UnitShortName</dd>
+        </div>
+    </dl>
+
+    <div class="card-required">
+        <span>Требуемое количество</span>
+        <strong>@Model.RequiredQuantity.ToString("N2") @Model.UnitShortName</strong>
+    </div>
+
+    <a class="card-action" href="@Url.Action("Products", "Materials", new { id = Model.MaterialId })">
+        Продукция <span aria-hidden="true">→</span>
+    </a>
+</article>

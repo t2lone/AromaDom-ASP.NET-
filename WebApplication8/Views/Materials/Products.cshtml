@@ -1,0 +1,61 @@
+﻿@model WebApplication8.Models.ProductsPageModel
+@using System.Linq
+@{
+    ViewBag.Title = "Продукция по материалу";
+}
+
+<a class="back-link" href="@Url.Action("Index")">← Назад к материалам</a>
+
+<div class="page-head page-head-tight">
+    <div class="page-head-text">
+        <h1>Продукция с использованием материала</h1>
+        <p class="page-sub">«@Model.Material.Name» · @Model.MaterialTypeName · единица измерения: @Model.UnitShortName</p>
+    </div>
+</div>
+
+<div class="info-panel">
+    <div class="info-panel-text">
+        <span class="panel-label">Требуемое количество материала</span>
+        <span class="panel-hint">Сумма норм расхода по всем рецептурам, где участвует материал.</span>
+    </div>
+    <strong class="panel-value">@Model.Total.ToString("N2") @Model.UnitShortName</strong>
+    <span class="panel-meta">Позиций: @Model.Items.Count</span>
+</div>
+
+@if (Model.Items.Any())
+{
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Наименование продукции</th>
+                    <th>Артикул</th>
+                    <th>Тип продукции</th>
+                    <th class="num">Количество на единицу</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td class="muted">@item.Article</td>
+                        <td>@item.ProductTypeName</td>
+                        <td class="num">@item.Quantity.ToString("0.###") @Model.UnitShortName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="table-hint">Количество указано на одну единицу продукции в единице измерения материала.</p>
+}
+else
+{
+    <div class="empty-state">
+        <h2>Материал не используется в рецептурах</h2>
+        <p>Когда рецептура появится, здесь будет список продукции и нормы расхода.</p>
+        <div class="empty-actions">
+            <a class="btn btn-secondary" href="@Url.Action("Index")">Вернуться к материалам</a>
+        </div>
+    </div>
+}

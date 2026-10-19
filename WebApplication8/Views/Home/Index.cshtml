@@ -1,0 +1,56 @@
+﻿@model IEnumerable<WebApplication8.Models.CategoryGroup>
+@{
+    ViewBag.Title = "Материалы по категориям";
+    int total = ViewBag.Total ?? 0;
+    int categories = ViewBag.Categories ?? 0;
+}
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Материалы</h1>
+        <p class="page-sub">@total позиций в @categories категориях: остатки, цены и потребность</p>
+    </div>
+    <div class="page-head-actions">
+        <a class="btn btn-secondary" href="@Url.Action("Index", "Materials")">Каталог</a>
+        <a class="btn btn-primary" href="@Url.Action("Create", "Materials")">Добавить материал</a>
+    </div>
+</div>
+
+<div class="category-index">
+    @foreach (var group in Model)
+    {
+        <a class="category-chip" href="@Url.Action("Index", "Materials", new { typeId = group.MaterialTypeId })">
+            @group.Name <span>@group.Items.Count</span>
+        </a>
+    }
+</div>
+
+@foreach (var group in Model)
+{
+    <section class="category" id="category-@group.MaterialTypeId">
+        <div class="category-head">
+            <h2>@group.Name <span class="category-count">@group.Items.Count</span></h2>
+            <a class="category-link" href="@Url.Action("Index", "Materials", new { typeId = group.MaterialTypeId })">
+                Все позиции <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+        <div class="cards-grid">
+            @foreach (var item in group.Items)
+            {
+                @Html.Partial("_MaterialCard", item)
+            }
+        </div>
+    </section>
+}
+
+@if (categories == 0)
+{
+    <div class="empty-state">
+        <h2>Материалов пока нет</h2>
+        <p>Добавьте первый материал — он появится в своей категории.</p>
+        <div class="empty-actions">
+            <a class="btn btn-primary" href="@Url.Action("Create", "Materials")">Добавить материал</a>
+        </div>
+    </div>
+}

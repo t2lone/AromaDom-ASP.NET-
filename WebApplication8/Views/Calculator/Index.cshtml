@@ -1,0 +1,96 @@
+﻿@model WebApplication8.Models.CalculatorModel
+@{
+    ViewBag.Title = "Калькулятор выхода продукции";
+}
+
+<div class="page-head page-head-tight">
+    <div class="page-head-text">
+        <h1>Калькулятор выхода продукции</h1>
+        <p class="page-sub">
+            Метод принимает типы продукции и материала, количество сырья и два параметра изделия.
+            Потери сырья берутся из типа материала.
+        </p>
+    </div>
+</div>
+
+<div class="calc-layout">
+    <div class="form-card">
+        @using (Html.BeginForm("Index", "Calculator", FormMethod.Post, new { @class = "material-form", autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+
+            if (!ViewData.ModelState.IsValid)
+            {
+                @Html.ValidationSummary(false, "", new { @class = "validation-summary" })
+            }
+
+            <div class="form-grid form-grid-single">
+                <div class="form-field">
+                    @Html.LabelFor(m => m.ProductTypeId, "Тип продукции")
+                    @Html.DropDownListFor(m => m.ProductTypeId, Model.ProductTypes, "Выберите тип продукции", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.ProductTypeId, "", new { @class = "field-error" })
+                </div>
+
+                <div class="form-field">
+                    @Html.LabelFor(m => m.MaterialTypeId, "Тип материала")
+                    @Html.DropDownListFor(m => m.MaterialTypeId, Model.MaterialTypes, "Выберите тип материала", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.MaterialTypeId, "", new { @class = "field-error" })
+                </div>
+
+                <div class="form-field">
+                    @Html.LabelFor(m => m.RawAmount, "Количество сырья, ед.")
+                    @Html.TextBoxFor(m => m.RawAmount, new { @class = "form-control", inputmode = "numeric", autocomplete = "off" })
+                    @Html.ValidationMessageFor(m => m.RawAmount, "", new { @class = "field-error" })
+                </div>
+
+                <div class="form-field">
+                    @Html.LabelFor(m => m.Param1, "Параметр продукции 1")
+                    @Html.TextBoxFor(m => m.Param1, "{0:0.###}", new { @class = "form-control", inputmode = "decimal", autocomplete = "off" })
+                    @Html.ValidationMessageFor(m => m.Param1, "", new { @class = "field-error" })
+                </div>
+
+                <div class="form-field">
+                    @Html.LabelFor(m => m.Param2, "Параметр продукции 2")
+                    @Html.TextBoxFor(m => m.Param2, "{0:0.###}", new { @class = "form-control", inputmode = "decimal", autocomplete = "off" })
+                    @Html.ValidationMessageFor(m => m.Param2, "", new { @class = "field-error" })
+                </div>
+            </div>
+
+            <p class="form-hint">
+                Расход на изделие = параметр 1 × параметр 2 × коэффициент типа продукции.
+                Полезное сырьё = количество сырья × (1 − процент потери / 100).
+            </p>
+
+            <div class="form-actions">
+                <a class="btn btn-secondary" href="@Url.Action("Index", "Materials")">К материалам</a>
+                <button class="btn btn-primary" type="submit">Рассчитать</button>
+            </div>
+        }
+    </div>
+
+    <aside class="calc-result">
+        <div class="result-panel">
+            <span class="panel-label">Количество продукции</span>
+            @if (Model.Result.HasValue)
+            {
+                <strong class="result-value">@Model.Result шт.</strong>
+                <p class="result-note">@Model.ResultNote</p>
+            }
+            else
+            {
+                <strong class="result-value result-empty">—</strong>
+                <p class="result-note">Заполните поля и нажмите «Рассчитать», чтобы получить целое количество изделий.</p>
+            }
+        </div>
+
+        <div class="calc-help">
+            <h2>Как считается</h2>
+            <ol>
+                <li>Расход на изделие: параметр 1 × параметр 2 × коэффициент типа продукции.</li>
+                <li>Полезное сырьё: количество сырья × (1 − потери / 100).</li>
+                <li>Количество: целая часть от деления полезного сырья на расход.</li>
+            </ol>
+            <p class="muted">Если типы не существуют или данные некорректны, метод возвращает −1.</p>
+        </div>
+    </aside>
+</div>

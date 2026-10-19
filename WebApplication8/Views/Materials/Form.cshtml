@@ -1,0 +1,90 @@
+﻿@model WebApplication8.Models.MaterialFormModel
+@{
+    bool isEdit = Model.MaterialId.HasValue;
+    ViewBag.Title = isEdit ? "Редактирование материала" : "Новый материал";
+}
+
+<a class="back-link" href="@Url.Action("Index")">← Назад к материалам</a>
+
+<div class="page-head page-head-tight">
+    <div class="page-head-text">
+        <h1>@(isEdit ? "Редактирование материала" : "Новый материал")</h1>
+        <p class="page-sub">
+            @(isEdit
+                ? "Изменения сразу попадут в список материалов и в карточку."
+                : "Заполните характеристики материала: они появятся в списке карточек.")
+        </p>
+    </div>
+</div>
+
+<div class="form-card">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "material-form", autocomplete = "off" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.MaterialId)
+
+        if (!ViewData.ModelState.IsValid)
+        {
+            @Html.ValidationSummary(false, "", new { @class = "validation-summary" })
+        }
+
+        <div class="form-grid">
+            <div class="form-field">
+                @Html.LabelFor(m => m.MaterialTypeId, "Тип материала *")
+                @Html.DropDownListFor(m => m.MaterialTypeId, Model.MaterialTypes, "Выберите тип материала", new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.MaterialTypeId, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.Name, "Наименование *")
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Например, Соевый воск премиум", maxlength = "120" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.Price, "Цена единицы материала, р *")
+                @Html.TextBoxFor(m => m.Price, "{0:0.00}", new
+                {
+                    @class = "form-control",
+                    inputmode = "decimal",
+                    placeholder = "890,00",
+                    autocomplete = "off"
+                })
+                @Html.ValidationMessageFor(m => m.Price, "", new { @class = "field-error" })
+                <span class="field-hint">Точность — до сотых, значение не может быть отрицательным.</span>
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.UnitId, "Единица измерения *")
+                @Html.DropDownListFor(m => m.UnitId, Model.Units, "Выберите единицу", new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.UnitId, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.PackageQuantity, "Количество в упаковке *")
+                @Html.TextBoxFor(m => m.PackageQuantity, "{0:0.###}", new { @class = "form-control", inputmode = "decimal", autocomplete = "off" })
+                @Html.ValidationMessageFor(m => m.PackageQuantity, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.StockQuantity, "Количество на складе *")
+                @Html.TextBoxFor(m => m.StockQuantity, "{0:0.###}", new { @class = "form-control", inputmode = "decimal", autocomplete = "off" })
+                @Html.ValidationMessageFor(m => m.StockQuantity, "", new { @class = "field-error" })
+            </div>
+
+            <div class="form-field">
+                @Html.LabelFor(m => m.MinQuantity, "Минимальное количество *")
+                @Html.TextBoxFor(m => m.MinQuantity, "{0:0.###}", new { @class = "form-control", inputmode = "decimal", autocomplete = "off" })
+                @Html.ValidationMessageFor(m => m.MinQuantity, "", new { @class = "field-error" })
+                <span class="field-hint">Порог, ниже которого материал нужно закупать. Не может быть отрицательным.</span>
+            </div>
+        </div>
+
+        <p class="form-hint">* — обязательные поля. Цена записывается с точностью до сотых.</p>
+
+        <div class="form-actions">
+            <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+        </div>
+    }
+</div>

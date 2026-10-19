@@ -1,0 +1,68 @@
+﻿@model IEnumerable<WebApplication8.Models.MaterialCard>
+@using System.Linq
+@{
+    ViewBag.Title = "Каталог материалов";
+    int count = Model.Count();
+    string search = ViewBag.Search as string;
+    bool hasFilter = !string.IsNullOrWhiteSpace(search) || ViewBag.TypeId != null;
+}
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Каталог материалов</h1>
+        <p class="page-sub">Все позиции подсистемы: остатки, цены и требуемое количество</p>
+    </div>
+    <div class="page-head-actions">
+        <a class="btn btn-primary" href="@Url.Action("Create")">Добавить материал</a>
+    </div>
+</div>
+
+<form class="catalog-filters" method="get" action="@Url.Action("Index")" role="search">
+    <input class="form-control" type="search" name="search" value="@search"
+           placeholder="Поиск по наименованию или типу" aria-label="Поиск материалов" />
+    <select class="form-select" name="typeId" aria-label="Категория материала">
+        <option value="">Все категории</option>
+        @foreach (var type in (IEnumerable<SelectListItem>)ViewBag.TypeOptions)
+        {
+            if (type.Selected)
+            {
+                <option value="@type.Value" selected="selected">@type.Text</option>
+            }
+            else
+            {
+                <option value="@type.Value">@type.Text</option>
+            }
+        }
+    </select>
+    <button class="btn btn-outline" type="submit">Показать</button>
+    @if (hasFilter)
+    {
+        <a class="link-reset" href="@Url.Action("Index")">Сбросить</a>
+    }
+</form>
+
+<div class="meta-row">
+    <span class="meta">Найдено: <strong>@count</strong></span>
+    <span class="meta-hint">Нажмите на карточку, чтобы изменить материал</span>
+</div>
+
+@if (count == 0)
+{
+    <div class="empty-state">
+        <h2>Материалы не найдены</h2>
+        <p>Измените запрос или выберите другую категорию.</p>
+        <div class="empty-actions">
+            <a class="btn btn-secondary" href="@Url.Action("Index")">Сбросить фильтр</a>
+            <a class="btn btn-primary" href="@Url.Action("Create")">Добавить материал</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="cards-grid">
+        @foreach (var item in Model)
+        {
+            @Html.Partial("_MaterialCard", item)
+        }
+    </div>
+}
